@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 
 class GetWordsListUseCase(private val wordListRepository: WordListRepository) {
 
-    fun getWordList(): List<WordUnit> {
+    fun getWordList(): LiveData<List<WordUnit>> {
         return wordListRepository.getWordList()
     }
 }

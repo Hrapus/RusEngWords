@@ -7,5 +7,5 @@ interface WordListRepository {
     fun deleteWord(word: WordUnit)
     fun editWord(word: WordUnit)
     fun getWord(id: Int): WordUnit
-    fun getWordList(): List<WordUnit>
+    fun getWordList(): LiveData<List<WordUnit>>
 }

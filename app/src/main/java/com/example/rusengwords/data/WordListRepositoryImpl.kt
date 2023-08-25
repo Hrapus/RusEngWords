@@ -1,18 +1,21 @@
 package com.example.rusengwords.data
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.rusengwords.domain.WordListRepository
 import com.example.rusengwords.domain.WordUnit
 import java.lang.RuntimeException
+import kotlin.random.Random
 
 object WordListRepositoryImpl: WordListRepository {
 
-    private val wordList = mutableListOf<WordUnit>()
+    private val wordListLD = MutableLiveData<List<WordUnit>>()
+    private val wordList = sortedSetOf<WordUnit>({o1, o2 -> o1.id.compareTo(o2.id)})
     private var autoIncrementId = 0
 
     init {
-        for(i in 0..10){
-            addWord(WordUnit("Русский №$i", "Endlish #$i", true))
+        for(i in 0..10000){
+            addWord(WordUnit("Русский №$i", "Endlish #$i", Random.nextBoolean()))
         }
     }
 
@@ -21,10 +24,12 @@ object WordListRepositoryImpl: WordListRepository {
             word.id = autoIncrementId++
         }
         wordList.add(word)
+        updateList()
     }
 
     override fun deleteWord(word: WordUnit) {
         wordList.remove(word)
+        updateList()
     }
 
     override fun editWord(word: WordUnit) {
@@ -37,7 +42,11 @@ object WordListRepositoryImpl: WordListRepository {
         return wordList.find { it.id == id } ?: throw RuntimeException("Not found")
     }
 
-    override fun getWordList(): List<WordUnit> {
-        return wordList.toList()
+    override fun getWordList(): LiveData<List<WordUnit>> {
+        return wordListLD
+    }
+
+    private fun updateList(){
+        wordListLD.value = wordList.toList()
     }
 }

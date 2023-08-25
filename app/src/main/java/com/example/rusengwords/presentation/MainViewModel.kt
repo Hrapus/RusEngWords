@@ -11,25 +11,21 @@ import com.example.rusengwords.domain.WordUnit
 class MainViewModel : ViewModel() {
 
     private val repository = WordListRepositoryImpl
-    val wordList = MutableLiveData<List<WordUnit>>()
+
 
     private val getWordsListUseCase = GetWordsListUseCase(repository)
     private val deleteWordUseCase = DeleteWordUseCase(repository)
     private val editWordUseCase = EditWordUseCase(repository)
 
-    fun getWordList(){
-        val list = getWordsListUseCase.getWordList()
-        wordList.value = list
-    }
+    val wordList = getWordsListUseCase.getWordList()
+
 
     fun deleteWord(word: WordUnit){
         deleteWordUseCase.deleteWord(word)
-        getWordList()
     }
 
     fun changeEnableState(word: WordUnit){
         val newWord = word.copy(actuality = !word.actuality)
         editWordUseCase.editWord(newWord)
-        getWordList()
     }
 }
