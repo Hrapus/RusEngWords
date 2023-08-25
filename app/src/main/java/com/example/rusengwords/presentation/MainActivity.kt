@@ -2,7 +2,9 @@ package com.example.rusengwords.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rusengwords.R
 import com.example.rusengwords.domain.WordUnit
@@ -19,21 +21,54 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        viewModel.wordList.observe(this){
+        viewModel.wordList.observe(this) {
             wordListAdapter.wordList = it
         }
     }
 
-    private fun setupRecycleView(){
+    private fun setupRecycleView() {
         val rvWordList = findViewById<RecyclerView>(R.id.rv_shop_list)
         wordListAdapter = WordListAdapter()
         rvWordList.adapter = wordListAdapter
 
-        wordListAdapter.onWordLongClickListener = object : WordListAdapter.OnWordLongClickListener {
-            override fun onWordLongClick(word: WordUnit) {
-                TODO("Not yet implemented")
+        setupLongClickListener()
+        setupClickListener()
+        setupSwipeListener(rvWordList)
+    }
+
+    private fun setupSwipeListener(rvWordList: RecyclerView) {
+        val callback = object : ItemTouchHelper.SimpleCallback(
+            0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
             }
 
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val item = wordListAdapter.wordList[viewHolder.adapterPosition]
+                viewModel.deleteWord(item)
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(callback)
+        itemTouchHelper.attachToRecyclerView(rvWordList)
+    }
+
+    private fun setupClickListener() {
+        wordListAdapter.onWordClickListener = {
+            Log.d("Log", it.toString())
         }
     }
+
+    private fun setupLongClickListener() {
+        wordListAdapter.onWordLongClickListener = {
+            viewModel.changeEnableState(it)
+        }
+    }
+
 }

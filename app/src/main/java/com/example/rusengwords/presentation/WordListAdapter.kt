@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rusengwords.R
 import com.example.rusengwords.domain.WordUnit
@@ -14,11 +15,14 @@ class WordListAdapter: RecyclerView.Adapter<WordListAdapter.WordListViewHolder>(
 
     var wordList = listOf<WordUnit>()
         set(value) {
+            val callback = WordListCallBack(wordList, value)
+            val diffResult = DiffUtil.calculateDiff(callback)
+            diffResult.dispatchUpdatesTo(this)
             field = value
-            notifyDataSetChanged()
         }
 
-    var onWordLongClickListener: OnWordLongClickListener? = null
+    var onWordLongClickListener: ((WordUnit) -> Unit)? = null
+    var onWordClickListener: ((WordUnit) -> Unit)? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordListViewHolder {
 
         val layout = when(viewType){
@@ -39,9 +43,14 @@ class WordListAdapter: RecyclerView.Adapter<WordListAdapter.WordListViewHolder>(
         val word = wordList[position]
 
         holder.view.setOnLongClickListener{
-            onWordLongClickListener?.onWordLongClick(word)
+            onWordLongClickListener?.invoke(word)
             true
         }
+
+        holder.view.setOnClickListener{
+            onWordClickListener?.invoke(word)
+        }
+
         holder.tvName.text = word.engWord
         holder.tvCount.text = word.rusWord
     }
@@ -66,10 +75,6 @@ class WordListAdapter: RecyclerView.Adapter<WordListAdapter.WordListViewHolder>(
     class WordListViewHolder(val view: View): RecyclerView.ViewHolder(view){
         val tvName = view.findViewById<TextView>(R.id.tv_name)
         val tvCount = view.findViewById<TextView>(R.id.tv_count)
-    }
-
-    interface OnWordLongClickListener{
-        fun onWordLongClick(word: WordUnit)
     }
 
     companion object{
