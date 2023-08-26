@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">RusEngWords</string>
     <string name="add_shop_item_content_description">Add new word</string>
+    <string name="eng_word">English word</string>
+    <string name="rus_word">Russian word</string>
+    <string name="save_btn">SAVE</string>
 </resources>
