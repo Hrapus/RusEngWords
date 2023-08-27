@@ -14,7 +14,7 @@ object WordListRepositoryImpl: WordListRepository {
     private var autoIncrementId = 0
 
     init {
-        for(i in 0..10000){
+        for(i in 0..10){
             addWord(WordUnit("Русский №$i", "Endlish #$i", Random.nextBoolean()))
         }
     }

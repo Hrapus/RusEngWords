@@ -7,27 +7,27 @@
     tools:context=".presentation.WordItemActivity">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_name"
+        android:id="@+id/til_eng_word"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toTopOf="@id/til_count"
+        app:layout_constraintBottom_toTopOf="@id/til_rus_word"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_name"
+            android:id="@+id/eng_word"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/eng_word" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_count"
+        android:id="@+id/til_rus_word"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -36,10 +36,10 @@
         app:layout_constraintBottom_toTopOf="@+id/save_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_name">
+        app:layout_constraintTop_toBottomOf="@+id/til_eng_word">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_count"
+            android:id="@+id/rus_word"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/rus_word"
@@ -50,6 +50,8 @@
         android:id="@+id/save_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
         android:text="@string/save_btn"
         app:layout_constraintBottom_toBottomOf="parent"

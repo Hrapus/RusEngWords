@@ -63,7 +63,7 @@ class WordItemViewModel: ViewModel() {
 
     private fun validateInput(eng: String, rus: String): Boolean {
         var result = true
-        if (eng.isBlank() || rus.isBlank()){
+        if (eng.isBlank() ){
             _errorInputWord.value = false
             result = false
         }

@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rusengwords.R
-import com.example.rusengwords.domain.WordUnit
+import com.example.rusengwords.presentation.WordItemActivity.Companion.newIntentAddWord
+import com.example.rusengwords.presentation.WordItemActivity.Companion.newIntentEditWord
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +25,12 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.wordList.observe(this) {
             wordListAdapter.submitList(it)
+        }
+
+        val buttonAddWord = findViewById<FloatingActionButton>(R.id.button_add_shop_item)
+        buttonAddWord.setOnClickListener {
+            val intent = newIntentAddWord(this)
+            startActivity(intent)
         }
     }
 
@@ -62,6 +70,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupClickListener() {
         wordListAdapter.onWordClickListener = {
             Log.d("Log", it.toString())
+            val intent = newIntentEditWord(this, it.id)
+            startActivity(intent)
         }
     }
 
