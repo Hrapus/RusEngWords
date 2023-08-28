@@ -16,10 +16,7 @@ import com.example.rusengwords.R
 import com.example.rusengwords.domain.WordUnit
 import com.google.android.material.textfield.TextInputLayout
 
-class WordFragment(
-    private val screenMode: String = MODE_UNKNOWN,
-    private val wordId: Int = WordUnit.UNDEFINED_ID
-) : Fragment() {
+class WordFragment : Fragment() {
 
     private lateinit var viewModel: WordItemViewModel
 
@@ -29,6 +26,14 @@ class WordFragment(
     private lateinit var rusWord: EditText
     private lateinit var buttonSave: Button
 
+    private var screenMode: String = MODE_UNKNOWN
+    private var wordId: Int = WordUnit.UNDEFINED_ID
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        parseParams()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,7 +45,6 @@ class WordFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        parseParams()
         viewModel = ViewModelProvider(this)[WordItemViewModel::class.java]
         initViews(view)
         addTextChangeListener()
@@ -88,13 +92,22 @@ class WordFragment(
     }
 
     private fun parseParams() {
-        if (screenMode != MODE_EDIT && screenMode != MODE_ADD) {
+        val args = requireArguments()
+        if (!args.containsKey(SCREEN_MODE)) {
             throw RuntimeException("No screen mode params")
         }
+        val mode = args.getString(SCREEN_MODE)
+        if (mode != MODE_EDIT && mode != MODE_ADD) {
+            throw RuntimeException("Unknown screen mode $mode")
+        }
+        screenMode = mode
 
-        if (screenMode == MODE_EDIT && wordId == WordUnit.UNDEFINED_ID) {
-            throw RuntimeException("No word ID")
+        if (screenMode == MODE_EDIT) {
+            if (!args.containsKey(WORD_ID)) {
+                throw RuntimeException("No word ID")
             }
+            wordId = args.getInt(WORD_ID, WordUnit.UNDEFINED_ID)
+        }
     }
 
     private fun initViews(view: View) {
@@ -128,31 +141,26 @@ class WordFragment(
     }
 
     companion object {
-        private const val EXTRA_SCREEN_MODE = "extra_mode"
-        private const val EXTRA_WORD_ID = "extra_word_id"
+        private const val SCREEN_MODE = "extra_mode"
+        private const val WORD_ID = "extra_word_id"
         private const val MODE_EDIT = "mode_edit"
         private const val MODE_ADD = "mode_add"
         private const val MODE_UNKNOWN = ""
 
         fun newInstanceAddWord(): WordFragment {
-            return WordFragment(MODE_ADD)
+            return WordFragment().apply {
+                arguments =  Bundle().apply {
+                    putString(SCREEN_MODE, MODE_ADD)
+                }
+            }
         }
         fun newInstanceEditWord(wordId: Int): WordFragment {
-            return WordFragment(MODE_EDIT, wordId = wordId)
+            return WordFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SCREEN_MODE, MODE_EDIT)
+                    putInt(WORD_ID, wordId)
+                }
+            }
         }
-
-        fun newIntentAddWord(context: Context): Intent {
-            val intent = Intent(context, WordItemActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, MODE_ADD)
-            return intent
-        }
-
-        fun newIntentEditWord(context: Context, wordId: Int): Intent {
-            val intent = Intent(context, WordItemActivity::class.java)
-            intent.putExtra(EXTRA_SCREEN_MODE, MODE_EDIT)
-            intent.putExtra(EXTRA_WORD_ID, wordId)
-            return intent
-        }
-
     }
 }
