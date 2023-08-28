@@ -19,6 +19,7 @@ import com.google.android.material.textfield.TextInputLayout
 class WordFragment : Fragment() {
 
     private lateinit var viewModel: WordItemViewModel
+    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
     private lateinit var tilEng: TextInputLayout
     private lateinit var tilRus: TextInputLayout
@@ -29,6 +30,14 @@ class WordFragment : Fragment() {
     private var screenMode: String = MODE_UNKNOWN
     private var wordId: Int = WordUnit.UNDEFINED_ID
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener){
+            onEditingFinishedListener = context
+        } else{
+            throw RuntimeException("Activity must implement listener OnEditingFinishedListener")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,7 +72,7 @@ class WordFragment : Fragment() {
             tilEng.error = message
         }
         viewModel.shouldCloseScreen.observe(viewLifecycleOwner) {
-            activity?.onBackPressed()
+            onEditingFinishedListener.onEditingFinished()
         }
     }
 
@@ -138,6 +147,10 @@ class WordFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
+
+    interface OnEditingFinishedListener{
+        fun onEditingFinished()
     }
 
     companion object {

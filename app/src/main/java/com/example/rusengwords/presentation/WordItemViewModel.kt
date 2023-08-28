@@ -70,7 +70,7 @@ class WordItemViewModel: ViewModel() {
         return result
     }
 
-    public fun resetError(){
+    fun resetError(){
         _errorInputWord.value = true
     }
 
