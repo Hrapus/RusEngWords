@@ -69,7 +69,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListener() {
         wordListAdapter.onWordClickListener = {
-            Log.d("Log", it.toString())
             val intent = newIntentEditWord(this, it.id)
             startActivity(intent)
         }
@@ -77,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupLongClickListener() {
         wordListAdapter.onWordLongClickListener = {
-            viewModel.changeEnableState(it)
+            viewModel.changeEnableState( it )
         }
     }
 
